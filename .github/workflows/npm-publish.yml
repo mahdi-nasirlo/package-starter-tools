@@ -22,9 +22,6 @@ jobs:
   publish-gpr:
     needs: build
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -32,7 +29,7 @@ jobs:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
       - run: npm i
-      - run: npm config set //registry.npmjs.org/:_authToken=${{secrets.LIARA_API_TOKEN}}
+      - run: npm config set //npm.pkg.github/:_authToken=${{secrets.LIARA_API_TOKEN}}
       - run: npm publish --access=public
         env:
           NODE_AUTH_TOKEN: ${{secrets.LIARA_API_TOKEN}}
