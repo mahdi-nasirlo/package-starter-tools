@@ -1,6 +1,4 @@
-// import { TUserInfo } from "@/hooks/use-get-user-info";
 import { User } from "oidc-react";
-// import { z } from "zod";
 
 function getUser() {
   if (typeof window !== "undefined") {
@@ -17,23 +15,4 @@ function getUser() {
   return null;
 }
 
-// function getUserInfo() {
-//   if (typeof window !== "undefined") {
-//     const userInfo = localStorage.getItem(`userInfo`);
-
-//     if (!userInfo) {
-//       return null;
-//     }
-
-//     try {
-//       return JSON.parse(userInfo) as TUserInfo;
-//     } catch (error) {
-//       console.error(error);
-//       return null;
-//     }
-//   }
-
-//   return null;
-// }
-
-export { getUser };
+export default { getUser };
