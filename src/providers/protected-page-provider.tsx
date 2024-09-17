@@ -2,15 +2,17 @@
 
 import React from "react";
 import { useAuth } from "oidc-react";
+import { AxiosInstance } from "axios";
 
 interface TProps {
     children: React.ReactNode,
-    loading?: React.ReactElement
+    loading?: React.ReactElement,
+    axiosInstance?: AxiosInstance[]
 }
 
 const loadingStyle: React.CSSProperties = { width: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }
 
-const ProtectedPageProvider = ({ children, loading }: TProps) => {
+const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => {
 
     const { userData, signIn, isLoading } = useAuth();
 
@@ -24,6 +26,8 @@ const ProtectedPageProvider = ({ children, loading }: TProps) => {
 
     if (isLoading) return (loading || <div style={loadingStyle}>loading ...</div>);
 
+    axiosInstance?.map((i) => baseAxiosRequestInterceptor(userData?.access_token as string, i))
+
     // if (searchParams.has("code")) {
     //     localStorage.removeItem("userInfo");
     //     router.push("/");
@@ -36,6 +40,21 @@ const ProtectedPageProvider = ({ children, loading }: TProps) => {
     }
 
     signIn();
+};
+
+const baseAxiosRequestInterceptor = (
+    token: string,
+    instance: AxiosInstance
+) => {
+    instance.interceptors.request.use(
+        (conf) => {
+            conf.headers["Authorization"] = "Bearer " + token;
+            return conf;
+        },
+        (err) => {
+            throw Error(err)
+        }
+    );
 };
 
 export default ProtectedPageProvider;
