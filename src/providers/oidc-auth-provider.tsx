@@ -6,7 +6,7 @@ import { AxiosInstance } from "axios";
 
 type TProps = {
   children: any,
-  axiosInstance?: AxiosInstance[]
+  axiosInstance?: AxiosInstance[],
 } & AuthProviderProps
 
 
