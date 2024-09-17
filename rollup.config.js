@@ -8,7 +8,7 @@ const packageJson = require("./package.json");
 
 export default [
   {
-    input: "src/index.ts",
+    input: ["index.ts"],
     output: [
       {
         file: packageJson.main,
@@ -21,7 +21,7 @@ export default [
         sourcemap: true,
       },
     ],
-    plugin: [
+    plugins: [
       peerDepsExternal(),
       resolve(),
       commonjs(),
@@ -31,7 +31,7 @@ export default [
     external: ["react", "react-dom"],
   },
   {
-    input: "src/index.ts",
+    input: ["index.ts"],
     output: [{ file: packageJson.types }],
     plugin: [dts.default()],
   },
