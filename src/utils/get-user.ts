@@ -15,4 +15,4 @@ function getUser() {
   return null;
 }
 
-export default { getUser };
+export default  getUser ;

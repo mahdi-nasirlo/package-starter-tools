@@ -1,8 +1,7 @@
 "use client"
 
-import { getUser } from "@/utils/get-user";
-import { useAuth } from "oidc-react";
 import React from "react";
+import { useAuth } from "oidc-react";
 
 interface TProps {
     children: React.ReactNode,

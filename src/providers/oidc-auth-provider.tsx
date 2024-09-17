@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import ProtectedPageRouter from "./protected-page-provider";
 import { AuthProvider, AuthProviderProps } from "oidc-react";
 
 type TProps = {
@@ -11,7 +11,8 @@ type TProps = {
 export default function OidcAuthProvider({ children, ...props }: TProps) {
   return (
     <AuthProvider {...props}>
-      {children}
+      {props.autoSignIn && <ProtectedPageRouter>{children}</ProtectedPageRouter>}
+      {!props.autoSignIn && <>{children}</>}
     </AuthProvider>
   );
 }
