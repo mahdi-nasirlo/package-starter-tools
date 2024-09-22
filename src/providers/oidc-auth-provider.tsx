@@ -3,17 +3,18 @@
 import ProtectedPageRouter from "./protected-page-provider";
 import { AuthProvider, AuthProviderProps } from "oidc-react";
 import { AxiosInstance } from "axios";
+import { TUseLive } from "../hooks";
 
 type TProps = {
   children: any,
   axiosInstance?: AxiosInstance[],
-} & AuthProviderProps
+}
 
 
-export default function OidcAuthProvider({ children, axiosInstance, ...props }: TProps) {
+export default function OidcAuthProvider({ children, onEvent, axiosInstance, ...props }: TProps & AuthProviderProps & TUseLive) {
   return (
     <AuthProvider {...props}>
-      {props.autoSignIn && <ProtectedPageRouter axiosInstance={axiosInstance}>{children}</ProtectedPageRouter>}
+      {props.autoSignIn && <ProtectedPageRouter onEvent={onEvent} axiosInstance={axiosInstance}>{children}</ProtectedPageRouter>}
       {!props.autoSignIn && <>{children}</>}
     </AuthProvider>
   );
