@@ -19,7 +19,7 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
 
     const signOut = useSignOutRedirect()
 
-    const { socketEventKeys } = useContext(SocketProps);
+    const { socketEventKeys, onKillUser } = useContext(SocketProps);
 
     const [hubConnection, setHubConnection] = useState<signalR.HubConnection>();
 
@@ -40,6 +40,10 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
                 .start()
                 .then(() => {
                     console.log("Connection started");
+
+                    connection.on("ReceiveMessage", (data: any) => onKillUser?.(data))
+                    connection.on("KillUser", (data: any) => onKillUser?.(data))
+
                     socketEventKeys?.map(i => connection.on(i.eventName, async (data: any) => {
                         await i.onClose?.(data);
                     }))
