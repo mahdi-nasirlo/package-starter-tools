@@ -12,7 +12,7 @@ type TProps = {
 
 
 type TUseLive = {
-  onKillUser?: (data: any) => void
+  onKillUser?: (data: any, signOut: () => void) => void
   socketEventKeys?: {
     eventName: string,
     onClose: (data: any) => void;

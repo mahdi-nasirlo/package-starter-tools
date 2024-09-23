@@ -41,8 +41,8 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
                 .then(() => {
                     console.log("Connection started");
 
-                    connection.on("ReceiveMessage", (data: any) => onKillUser?.(data))
-                    connection.on("KillUser", (data: any) => onKillUser?.(data))
+                    connection.on("ReceiveMessage", (data: any) => onKillUser?.(data, signOut))
+                    connection.on("KillUser", (data: any) => onKillUser?.(data, signOut))
 
                     socketEventKeys?.map(i => connection.on(i.eventName, async (data: any) => {
                         await i.onClose?.(data);
