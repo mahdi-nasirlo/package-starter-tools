@@ -1,17 +1,11 @@
 import * as signalR from "@microsoft/signalr";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSignOutRedirect } from "../hooks";
+import { SocketProps } from "../providers/oidc-auth-provider";
 
-export type TUseLive = {
-  onEvent?: (data: {
-    data: any;
-    signOut: boolean;
-    type: "error" | "warning" | "success";
-    onClose: () => void;
-  }) => void;
-};
+export default function useLiveAuth() {
+  const { onEvent } = useContext(SocketProps);
 
-export default function useLiveAuth({ onEvent }: TUseLive) {
   const singOut = useSignOutRedirect();
 
   const [hubConnection, setHubConnection] = useState<signalR.HubConnection>();

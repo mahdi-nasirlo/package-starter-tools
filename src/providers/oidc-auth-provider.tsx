@@ -1,9 +1,12 @@
 "use client";
 
-import ProtectedPageRouter from "./protected-page-provider";
-import { AuthProvider, AuthProviderProps } from "oidc-react";
+import * as signalR from "@microsoft/signalr";
 import { AxiosInstance } from "axios";
-import { TUseLive } from "../hooks";
+import { AuthProvider, AuthProviderProps } from "oidc-react";
+import ProtectedPageRouter from "./protected-page-provider";
+import { useSignOutRedirect } from "../hooks";
+import React, { useEffect, useState } from "react";
+import { exitCode } from "process";
 
 type TProps = {
   children: any,
@@ -11,10 +14,23 @@ type TProps = {
 }
 
 
-export default function OidcAuthProvider({ children, onEvent, axiosInstance, ...props }: TProps & AuthProviderProps & TUseLive) {
+type TUseLive = {
+  onEvent?: (data: {
+    data: any;
+    signOut: boolean;
+    type: "error" | "warning" | "success";
+    onClose: () => void;
+  }) => void;
+};
+
+export const SocketProps = React.createContext<TUseLive>({})
+
+export default function OidcAuthProvider({ children, axiosInstance, onEvent, ...props }: TProps & AuthProviderProps & TUseLive) {
   return (
     <AuthProvider {...props}>
-      {props.autoSignIn && <ProtectedPageRouter onEvent={onEvent} axiosInstance={axiosInstance}>{children}</ProtectedPageRouter>}
+      {props.autoSignIn && <SocketProps.Provider value={{ onEvent }}>
+        <ProtectedPageRouter axiosInstance={axiosInstance}>{children}</ProtectedPageRouter>
+      </SocketProps.Provider>}
       {!props.autoSignIn && <>{children}</>}
     </AuthProvider>
   );

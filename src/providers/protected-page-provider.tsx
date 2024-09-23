@@ -3,7 +3,7 @@
 import React from "react";
 import { useAuth } from "oidc-react";
 import { AxiosInstance } from "axios";
-import { useLiveAuth, TUseLive } from "../hooks/index";
+import useLiveAuth from '../hooks/useLiveAuth'
 
 interface TProps {
     children: React.ReactNode,
@@ -13,11 +13,11 @@ interface TProps {
 
 const loadingStyle: React.CSSProperties = { width: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }
 
-const ProtectedPageProvider = ({ children, loading, axiosInstance, onEvent }: TProps & TUseLive) => {
+const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => {
 
     const { userData, signIn, isLoading } = useAuth();
 
-    useLiveAuth({ onEvent })
+    useLiveAuth()
 
     if (isLoading) return (loading || <div style={loadingStyle}>loading ...</div>);
 
