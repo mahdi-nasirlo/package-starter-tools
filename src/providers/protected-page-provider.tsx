@@ -1,7 +1,7 @@
 "use client"
 
 import * as signalR from "@microsoft/signalr";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useAuth } from "oidc-react";
 import { AxiosInstance } from "axios";
 import { SocketProps } from "./oidc-auth-provider";
@@ -17,13 +17,17 @@ const loadingStyle: React.CSSProperties = { width: "100vh", display: "flex", ali
 
 const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => {
 
-    const { onEvent } = useContext(SocketProps);
+    const signOut = useSignOutRedirect()
 
-    const singOut = useSignOutRedirect();
+    const { socketEventKeys } = useContext(SocketProps);
 
     const [hubConnection, setHubConnection] = useState<signalR.HubConnection>();
 
     const { userData, signIn, isLoading } = useAuth();
+
+    const idleTimeoutRef = useRef<any | null>(null);
+
+    const idleTimeLimit = 30 * 60 * 1000; // 30 minutes in milliseconds
 
     useEffect(() => {
 
@@ -36,24 +40,9 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
                 .start()
                 .then(() => {
                     console.log("Connection started");
-
-                    connection.on("ReceiveMessage", async (data: any) => {
-                        await onEvent?.({
-                            data,
-                            signOut: true,
-                            type: "error",
-                            onClose: singOut,
-                        });
-                    });
-
-                    connection.on("KillUser", async (data: any) => {
-                        await onEvent?.({
-                            data,
-                            signOut: true,
-                            type: "error",
-                            onClose: singOut,
-                        });
-                    });
+                    socketEventKeys?.map(i => connection.on(i.eventName, async (data: any) => {
+                        await i.onClose?.(data);
+                    }))
                 })
                 .catch((err: Error) =>
                     console.error("Error while starting connection: " + err)
@@ -62,7 +51,7 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
             setHubConnection(connection);
         };
 
-        startConnection();
+        if (Array.isArray(socketEventKeys)) startConnection();
 
         return () => {
             if (hubConnection) {
@@ -71,6 +60,30 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
         };
 
     }, []);
+
+
+    useEffect(() => {
+
+        const resetIdleTimer = () => {
+            console.log("clear event");
+            clearTimeout(idleTimeoutRef.current);
+            idleTimeoutRef.current = setTimeout(signOut, idleTimeLimit);
+        };
+
+        window.addEventListener('mousemove', resetIdleTimer);
+        window.addEventListener('keydown', resetIdleTimer);
+        window.addEventListener('scroll', resetIdleTimer);
+
+        resetIdleTimer();
+
+        return () => {
+            clearTimeout(idleTimeoutRef.current);
+            window.removeEventListener('mousemove', resetIdleTimer);
+            window.removeEventListener('keydown', resetIdleTimer);
+            window.removeEventListener('scroll', resetIdleTimer);
+        };
+
+    }, [])
 
     if (isLoading) return (loading || <div style={loadingStyle}>loading ...</div>);
 
