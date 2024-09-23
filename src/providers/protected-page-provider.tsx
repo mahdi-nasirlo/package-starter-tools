@@ -62,9 +62,15 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
             setHubConnection(connection);
         };
 
-    }, []);
+        startConnection();
 
-    // useLiveAuth()
+        return () => {
+            if (hubConnection) {
+                hubConnection?.stop();
+            }
+        };
+
+    }, []);
 
     if (isLoading) return (loading || <div style={loadingStyle}>loading ...</div>);
 
