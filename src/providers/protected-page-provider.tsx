@@ -1,9 +1,11 @@
 "use client"
 
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useAuth } from "oidc-react";
 import { AxiosInstance } from "axios";
 import useLiveAuth from '../hooks/useLiveAuth'
+import { SocketProps } from "./oidc-auth-provider";
+import useSignOutRedirect from "../hooks/useSignOutRedirect";
 
 interface TProps {
     children: React.ReactNode,
@@ -15,9 +17,17 @@ const loadingStyle: React.CSSProperties = { width: "100vh", display: "flex", ali
 
 const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => {
 
+    const { onEvent } = useContext(SocketProps);
+
+    const singOut = useSignOutRedirect();
+
     const { userData, signIn, isLoading } = useAuth();
 
-    useLiveAuth()
+    useEffect(() => {
+
+    }, []);
+
+    // useLiveAuth()
 
     if (isLoading) return (loading || <div style={loadingStyle}>loading ...</div>);
 
