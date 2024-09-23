@@ -1,12 +1,9 @@
 "use client";
 
-import * as signalR from "@microsoft/signalr";
 import { AxiosInstance } from "axios";
 import { AuthProvider, AuthProviderProps } from "oidc-react";
 import ProtectedPageRouter from "./protected-page-provider";
-import { useSignOutRedirect } from "../hooks";
-import React, { useEffect, useState } from "react";
-import { exitCode } from "process";
+import React from "react";
 
 type TProps = {
   children: any,

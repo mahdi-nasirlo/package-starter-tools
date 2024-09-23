@@ -1,6 +1,6 @@
 import * as signalR from "@microsoft/signalr";
 import { useContext, useEffect, useState } from "react";
-import { useSignOutRedirect } from "../hooks";
+import useSignOutRedirect from "../hooks/useSignOutRedirect";
 import { SocketProps } from "../providers/oidc-auth-provider";
 
 export default function useLiveAuth() {
