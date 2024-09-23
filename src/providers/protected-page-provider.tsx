@@ -1,9 +1,9 @@
 "use client"
 
-import React, { useContext, useEffect } from "react";
+import * as signalR from "@microsoft/signalr";
+import React, { useContext, useEffect, useState } from "react";
 import { useAuth } from "oidc-react";
 import { AxiosInstance } from "axios";
-import useLiveAuth from '../hooks/useLiveAuth'
 import { SocketProps } from "./oidc-auth-provider";
 import useSignOutRedirect from "../hooks/useSignOutRedirect";
 
@@ -20,6 +20,8 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
     const { onEvent } = useContext(SocketProps);
 
     const singOut = useSignOutRedirect();
+
+    const [hubConnection, setHubConnection] = useState()
 
     const { userData, signIn, isLoading } = useAuth();
 
