@@ -21,10 +21,10 @@ type TUseLive = {
 
 export const SocketProps = React.createContext<TUseLive>({})
 
-export default function OidcAuthProvider({ children, axiosInstance, socketEventKeys, ...props }: TProps & AuthProviderProps & TUseLive) {
+export default function OidcAuthProvider({ children, axiosInstance, socketEventKeys, onKillUser, ...props }: TProps & AuthProviderProps & TUseLive) {
   return (
     <AuthProvider {...props}>
-      {props.autoSignIn && <SocketProps.Provider value={{ socketEventKeys }}>
+      {props.autoSignIn && <SocketProps.Provider value={{ socketEventKeys, onKillUser }}>
         <ProtectedPageRouter axiosInstance={axiosInstance}>{children}</ProtectedPageRouter>
       </SocketProps.Provider>}
       {!props.autoSignIn && <>{children}</>}

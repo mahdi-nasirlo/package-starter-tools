@@ -55,7 +55,8 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
             setHubConnection(connection);
         };
 
-        if (Array.isArray(socketEventKeys)) startConnection();
+
+        if (Array.isArray(socketEventKeys) || onKillUser) startConnection();
 
         return () => {
             if (hubConnection) {
@@ -69,7 +70,6 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
     useEffect(() => {
 
         const resetIdleTimer = () => {
-            console.log("clear event");
             clearTimeout(idleTimeoutRef.current);
             idleTimeoutRef.current = setTimeout(signOut, idleTimeLimit);
         };
