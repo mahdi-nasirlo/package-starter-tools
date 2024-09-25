@@ -12,7 +12,8 @@ type TProps = {
 
 
 type TUseLive = {
-  onKillUser?: (data: any, signOut: () => void) => void
+  onKillUser?: (data: any, signOut: () => void) => void,
+  loading?: React.ReactNode,
   socketEventKeys?: {
     eventName: string,
     onClose: (data: any) => void;
@@ -21,11 +22,11 @@ type TUseLive = {
 
 export const SocketProps = React.createContext<TUseLive>({})
 
-export default function OidcAuthProvider({ children, axiosInstance, socketEventKeys, onKillUser, ...props }: TProps & AuthProviderProps & TUseLive) {
+export default function OidcAuthProvider({ children, loading, axiosInstance, socketEventKeys, onKillUser, ...props }: TProps & AuthProviderProps & TUseLive) {
   return (
     <AuthProvider {...props}>
       {props.autoSignIn && <SocketProps.Provider value={{ socketEventKeys, onKillUser }}>
-        <ProtectedPageRouter axiosInstance={axiosInstance}>{children}</ProtectedPageRouter>
+        <ProtectedPageRouter loading={loading} axiosInstance={axiosInstance}>{children}</ProtectedPageRouter>
       </SocketProps.Provider>}
       {!props.autoSignIn && <>{children}</>}
     </AuthProvider>

@@ -9,7 +9,7 @@ import useSignOutRedirect from "../hooks/useSignOutRedirect";
 
 interface TProps {
     children: React.ReactNode,
-    loading?: React.ReactElement,
+    loading?: React.ReactNode,
     axiosInstance?: AxiosInstance[],
 }
 

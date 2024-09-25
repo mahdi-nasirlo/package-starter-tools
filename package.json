@@ -1,6 +1,6 @@
 {
   "name": "@nasirlo-m/opic-starter-tools",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "",
   "main": "src/index.js",
   "type": "module",
