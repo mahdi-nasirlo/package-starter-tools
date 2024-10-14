@@ -6,16 +6,18 @@ import { useAuth } from "oidc-react";
 import { AxiosInstance } from "axios";
 import { SocketProps } from "./oidc-auth-provider";
 import useSignOutRedirect from "../hooks/useSignOutRedirect";
+import { jwtDecode } from "jwt-decode";
 
 interface TProps {
     children: React.ReactNode,
     loading?: React.ReactNode,
+    authority?: string,
     axiosInstance?: AxiosInstance[],
 }
 
 const loadingStyle: React.CSSProperties = { width: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }
 
-const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => {
+const ProtectedPageProvider = ({ children, loading, axiosInstance, authority }: TProps) => {
 
     const signOut = useSignOutRedirect()
 
@@ -28,6 +30,22 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance }: TProps) => 
     const idleTimeoutRef = useRef<any | null>(null);
 
     const idleTimeLimit = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+    let access_token = userData?.access_token
+
+    useEffect(() => {
+
+        if (access_token) {
+            const decodedToken: any = jwtDecode(access_token);
+            if (decodedToken.access_client == "0") {
+                if (authority) {
+                    window.location.href = authority
+                }
+                else signOut()
+            }
+        }
+
+    }, [access_token])
 
     useEffect(() => {
 
