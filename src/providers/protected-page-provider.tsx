@@ -107,9 +107,17 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance, authority }: 
 
     }, [])
 
-    if (isLoading) return (loading || <div style={loadingStyle}>loading ...</div>);
+    if (isLoading || !userData?.access_token) return (loading || <div style={loadingStyle}>loading ...</div>);
 
-    axiosInstance?.map((i) => baseAxiosRequestInterceptor(userData?.access_token as string, i))
+    axiosInstance?.map((i) => i.interceptors.request.use(
+        (conf) => {
+            conf.headers["Authorization"] = "Bearer " + userData?.access_token;
+            return conf;
+        },
+        (err) => {
+            throw Error(err)
+        }
+    ))
 
     if (userData) {
         return children;
@@ -118,19 +126,5 @@ const ProtectedPageProvider = ({ children, loading, axiosInstance, authority }: 
     signIn();
 };
 
-const baseAxiosRequestInterceptor = (
-    token: string,
-    instance: AxiosInstance
-) => {
-    instance.interceptors.request.use(
-        (conf) => {
-            conf.headers["Authorization"] = "Bearer " + token;
-            return conf;
-        },
-        (err) => {
-            throw Error(err)
-        }
-    );
-};
 
 export default ProtectedPageProvider;
