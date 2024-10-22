@@ -26,7 +26,7 @@ export default function OidcAuthProvider({ children, loading, axiosInstance, soc
   return (
     <AuthProvider {...props}>
       {props.autoSignIn && <SocketProps.Provider value={{ socketEventKeys, onKillUser }}>
-        <ProtectedPageRouter loading={loading} axiosInstance={axiosInstance}>{children}</ProtectedPageRouter>
+        <ProtectedPageRouter loading={loading} authority={props.authority} axiosInstance={axiosInstance}>{children}</ProtectedPageRouter>
       </SocketProps.Provider>}
       {!props.autoSignIn && <>{children}</>}
     </AuthProvider>
